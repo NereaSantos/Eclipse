@@ -1,4 +1,4 @@
-package practicasevaluables1ºtrimestre;
+package Practicas;
 import java.util.*;
 
 public class Practicaevaluable13 {

@@ -1,6 +1,6 @@
 package Ejercicio1120;
 
-public class Cliente {
+public class Cliente implements Comparable {
 
 	String nombre;
 	String telefono;
@@ -41,6 +41,28 @@ public class Cliente {
 	
 		this.telefono = telefono;
 	
+	}
+
+	@Override
+	public int compareTo(Object o) {
+	
+		Cliente otro = (Cliente)o;
+		
+		if(this.nombre.compareTo(otro.nombre) == 1) {
+			
+			return 1;
+			
+		}else if(this.nombre.compareTo(otro.nombre) == -1) {
+		
+			return -1;
+			
+		}else {
+			
+			this.telefono.compareTo(otro.telefono);
+			
+		}
+		
+		return 0;
 	}
 	
 }

@@ -1,4 +1,4 @@
-package practicasevaluables1ºtrimestre;
+package Practicas;
 public class Practicaevaluable11v1 {
     
 public static void main(String[] args){

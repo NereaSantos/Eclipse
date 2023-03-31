@@ -3,12 +3,15 @@ package Ejercicio1120;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Scanner;
 
 public class Ejercicio1120 {
 
 	public static void main(String[] args) {
 		
-		String respuesta = null;
+		Scanner scr = new Scanner(System.in);
+		
+		int respuesta;
 		
 		Cliente[] TablaClientes = new Cliente[0];
 		
@@ -24,23 +27,21 @@ public class Ejercicio1120 {
 								+ "\n 4.Listar los clientes "
 								+ "\n 5.Comparar clientes");
 			
-			try {
-					
-				respuesta = br.readLine();
+			respuesta = scr.nextInt();
 			
-			} catch (IOException e) {
-				
-				System.out.println("Algo salio mal");
-			
-			}
-			
-			if(respuesta.equals("1")) {
+			if(respuesta == 1) {
 				
 				AñadirCliente(TablaClientes);
 				
 			}
 			
-		}while(!respuesta.equals("0"));
+			if(respuesta == 2) {
+				
+				
+				
+			}
+			
+		}while(respuesta >= 1 && respuesta <= 5);
 		
 	}
 	
@@ -55,6 +56,7 @@ public class Ejercicio1120 {
 		String[] DatosClientes;
 		
 		try {
+			
 			DatosClientes = br.readLine().split(" ");
 			TablaClientes[0] = new Cliente(DatosClientes[0], DatosClientes[1], DatosClientes[2]);
 			
@@ -66,7 +68,8 @@ public class Ejercicio1120 {
 		
 		System.out.println("Escriba el nombre del cliente que desea añadir");
 		
-		
+		InputStreamReader is2 = new InputStreamReader(System.in);
+		BufferedReader br2 = new BufferedReader(is2);
 				
 	}
 	
