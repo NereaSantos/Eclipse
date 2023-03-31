@@ -3,104 +3,73 @@ import java.util.*;
  
 public class Practicaevaluable2{
  
- public static void main(String[] args){
- 
-    Scanner teclado = new Scanner(System.in);
- 
-    int respuesta, tomates = 0, total = 0;
- 
-    double kilos = 0, descuento, precio, tomatesreg;
+	/*Una frutería ofrece un descuento en los tomates, del 20% por la 
+	 * compra de más de 3 kilos o 15 unidades (1 kilo son aproximadamente 
+	 * 5 tomates) y 10% en caso contrario. Además por la compra de más de 
+	 * 3 kilos se regalan 2 tomates por cada kilo de más. Pon un precio a 
+	 * los tomates y calcula el total de la compra, el descuento, lo que 
+	 * pagas finalmente y el número de tomates que se regalan en cada 
+	 * compra.*/
+	
+	public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
 
-    System.out.println("Escribe el precio del tomate: ");
-		precio = teclado.nextDouble();
-		
-		while(precio<0) {
-			System.out.println("Error. Escribe un precio valido: ");
-			precio = teclado.nextDouble();
-		}
- 
-    System.out.println("¿Desea comprar en unidades o en kilos?. \n1UNIDADES \n2KILOS");
- 
- 
-        respuesta = teclado.nextInt();
-        
-        kilos = tomates/5;
- 
-    if(respuesta == 1){
- 
-        System.out.println("¿Cuantas unidades quieres comprar?");
- 
-        tomates = teclado.nextInt();
- 
-        if(tomates > 15){
- 
-            descuento = 0.20;
- 
-            precio = (precio * tomates);
- 
-            total = (int) (precio-(precio*descuento));
- 
-            tomatesreg = (int)(2*(tomates/15));
- 
-            tomates = (int) (tomates + tomatesreg);
- 
-            System.out.println("El total de su compra es: " + tomates + " tomates con un descuento de: " + descuento + " un importe final de " + total + " y " + tomatesreg + " tomates de regalo");
- 
+        // Preguntar al usuario si quiere comprar en kilos o en unidades
+        System.out.print("¿Quieres comprar en kilos (K) o en unidades (U)? ");
+        String opcion = scanner.nextLine().toUpperCase();
+        boolean comprarEnKilos = opcion.equals("K");
+
+        // Solicitar al usuario el precio por unidad de tomate
+        System.out.print("Introduce el precio por unidad de tomate: ");
+        double precioTomate = scanner.nextDouble();
+
+        // Solicitar al usuario la cantidad de tomates comprados
+        System.out.print("Introduce la cantidad de tomates ");
+        if (comprarEnKilos) {
+            System.out.print("en kilos: ");
+        } else {
+            System.out.print("en unidades: ");
         }
- 
-        else if(tomates < 15){
- 
-            descuento = 0.10;
- 
-            precio = precio - (precio * tomates);
- 
-            total = (int) (precio*descuento);
- 
-            System.out.println("El total de su compra es: " + tomates + " tomates con un descuento de: " + descuento + " un importe final de " + total);
+        int cantidadTomates = scanner.nextInt();
+
+        double precioOriginal = 0.0;
+        double precioCompra = 0.0;
+        int tomatesRegalados = 0;
+
+        if (comprarEnKilos) {
+            // Cálculo en kilos
+            double kilosTomates = cantidadTomates;
+            int unidadesTomates = (int) (kilosTomates * 5);
+
+            precioOriginal = unidadesTomates * precioTomate;
+            if (kilosTomates > 3 || unidadesTomates > 15) {
+                double descuento = Math.round(precioOriginal * 0.2 * 100) / 100.0;
+                precioCompra = precioOriginal - descuento;
+                tomatesRegalados = (int) Math.round((unidadesTomates - 15) / 5.0) * 2;
+            } else {
+                double descuento = Math.round(precioOriginal * 0.1 * 100) / 100.0;
+                precioCompra = precioOriginal - descuento;
+                tomatesRegalados = 0;
+            }
+        } else {
+            // Cálculo en unidades
+            precioOriginal = cantidadTomates * precioTomate;
+            if (cantidadTomates > 15) {
+                double descuento = Math.round(precioOriginal * 0.2 * 100) / 100.0;
+                precioCompra = precioOriginal - descuento;
+                tomatesRegalados = (cantidadTomates - 15) * 2;
+            } else {
+                double descuento = Math.round(precioOriginal * 0.1 * 100) / 100.0;
+                precioCompra = precioOriginal - descuento;
+                tomatesRegalados = 0;
+            }
         }
- 
+
+        // Imprimir resultados
+        System.out.println("El precio de compra es: " + precioCompra + " euros");
+        System.out.println("El descuento es: " + Math.round((precioOriginal - precioCompra) / precioOriginal * 100) + "%");
+        System.out.println("El número de tomates regalados es: " + tomatesRegalados);
+
+        scanner.close();
     }
-    else if(respuesta == 2){
- 
-        System.out.println("¿Cuantos Kilos quieres comprar?");
- 
-        kilos = teclado.nextInt();
- 
-        if(kilos > 3){
- 
-            descuento = 0.20;
- 
-            kilos = tomates/5;
- 
-            precio = precio * kilos;
- 
-            total = (int) (precio-(precio*descuento));
- 
-            tomatesreg = (int)(2*(kilos-3));
- 
-            System.out.println("El total de su compra es: " + kilos + " kilos con un descuento de: " + descuento + " un importe final de " + total + " y " + tomatesreg + " tomates de regalo");
- 
-        }
- 
-        else if(kilos < 3){
- 
-            descuento = 0.10;
- 
-            kilos = tomates/5;
- 
-            precio = precio * tomates;
- 
-            total = (int) (precio-(precio*descuento));
- 
-          
- 
-            System.out.println("El total de su compra es: " + kilos + " kilos con un descuento de: " + descuento + " un importe final de " + total);
- 
-        }
- 
-    }
- 
-    teclado.close();    
- 
- }  
 }

@@ -3,99 +3,81 @@ import java.util.*;
 
 public class Practicaevaluable7 {
     
-public static void main(String[] args){
+    public static void main(String[] args) {
+        Scanner teclado = new Scanner(System.in);
 
-Scanner teclado = new Scanner(System.in);
+        int numero, decenas = 0, unidades = 0;
+        String textoNumero = "";
 
-int numero, decenas = 0, unidades = 0;
+        System.out.println("Escriba un número del 0 al 99");
+        numero = teclado.nextInt();
 
-    System.out.println("Escriba un número del 0 al 99");
+        if (numero > 0 && numero < 99) {
+            decenas = numero/10;
+            unidades = numero%10;
+        }
 
-    numero = teclado.nextInt();
+        switch (decenas) {
+            case 1:
+                textoNumero += "diez y ";
+                break;
+            case 2:
+                textoNumero += "veinte y ";
+                break;
+            case 3:
+                textoNumero += "treinta y ";
+                break;
+            case 4:
+                textoNumero += "cuarenta y ";
+                break;
+            case 5:
+                textoNumero += "cincuenta y ";
+                break;
+            case 6:
+                textoNumero += "sesenta y ";
+                break;
+            case 7:
+                textoNumero += "setenta y ";
+                break;
+            case 8:
+                textoNumero += "ochenta y ";
+                break;
+            case 9:
+                textoNumero += "noventa y ";
+                break;
+        }
 
-    if(numero > 0 && numero < 99){
+        switch (unidades) {
+            case 1:
+                textoNumero += "uno";
+                break;
+            case 2:
+                textoNumero += "dos";
+                break;
+            case 3:
+                textoNumero += "tres";
+                break;
+            case 4:
+                textoNumero += "cuatro";
+                break;
+            case 5:
+                textoNumero += "cinco";
+                break;
+            case 6:
+                textoNumero += "seis";
+                break;
+            case 7:
+                textoNumero += "siete";
+                break;
+            case 8:
+                textoNumero += "ocho";
+                break;
+            case 9:
+                textoNumero += "nueve";
+                break;
+        }
 
-        decenas = numero/10;
-
-        unidades = numero%10;
-
+        System.out.println(textoNumero);
+        teclado.close();
     }
-
-    if(decenas == 1){
-
-        System.out.println("diez y ");
-
-    }else if(decenas == 2){
-
-        System.out.println("veinte y ");
-
-    }else if(decenas == 3){
-
-        System.out.println("treinta y ");
-
-    }else if(decenas == 4){
-
-        System.out.println("cuarenta y ");
-
-    }else if(decenas == 5){
-
-        System.out.println("cincuenta y ");
-
-    }else if(decenas == 6){
-
-        System.out.println("sesenta y ");
-
-    }else if(decenas == 7){
-
-        System.out.println("setenta y ");
-
-    }else if(decenas == 8){
-
-        System.out.println("ochenta y ");
-
-    }else if(decenas == 9){
-
-        System.out.println("noventa y ");
-
-    }
-
-    if(unidades == 1){
-
-        System.out.println("uno");
-
-    }else if(unidades == 2){
-
-        System.out.println("dos");
-
-    }else if(unidades == 3){
-
-        System.out.println("tres");
-
-    }else if(unidades == 4){
-
-        System.out.println("cuatro");
-
-    }else if(unidades == 5){
-
-        System.out.println("cinco");
-
-    }else if(unidades == 6){
-
-        System.out.println("seis");
-
-    }else if(unidades == 7){
-
-        System.out.println("siete");
-
-    }else if(unidades == 8){
-
-        System.out.println("ocho");
-
-    }else if(unidades == 9){
-
-        System.out.println("nueve");
-
-    }
-
-    teclado.close();
-}}
+}
