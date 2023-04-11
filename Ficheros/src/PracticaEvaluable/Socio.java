@@ -1,0 +1,339 @@
+package PracticaEvaluable;
+
+import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+
+public class Socio implements Serializable {
+
+	private static ArrayList<Socio> socios = new ArrayList<>();
+	
+    private static int nextNumeroSocio = 1;
+    
+    private int numeroSocio;
+    private String nombre;
+    private Date fechaNacimiento;
+    private Date fechaAlta;
+    private String telefono;
+    private String email;
+    private ArrayList<Familiar> familiares;
+
+    public Socio(String nombre, Date fechaNacimiento, String telefono, String email) {
+        this.numeroSocio = nextNumeroSocio++;
+        this.nombre = nombre;
+        this.fechaNacimiento = fechaNacimiento;
+        this.fechaAlta = new Date();
+        this.telefono = telefono;
+        this.email = email;
+        this.familiares = new ArrayList<>();
+    }
+
+    public Socio(String nombre, Date fechaNacimiento) {
+        this(nombre, fechaNacimiento, "", "");
+    }
+
+    public int getNumeroSocio() {
+        return numeroSocio;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public Date getFechaNacimiento() {
+        return fechaNacimiento;
+    }
+
+    public void setFechaNacimiento(Date fechaNacimiento) {
+        this.fechaNacimiento = fechaNacimiento;
+    }
+
+    public Date getFechaAlta() {
+        return fechaAlta;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void agregarFamiliar(Familiar familiar) {
+        familiares.add(familiar);
+    }
+
+    public List<Familiar> getFamiliares() {
+        return familiares;
+    }
+
+    @Override
+    public String toString() {
+        String str = "Número de socio: " + numeroSocio + "\n";
+        str += "Nombre: " + nombre + "\n";
+        str += "Fecha de nacimiento: " + fechaNacimiento + "\n";
+        str += "Fecha de alta: " + fechaAlta + "\n";
+        str += "Teléfono: " + telefono + "\n";
+        str += "Email: " + email + "\n";
+        str += "Familiares: " + "\n";
+        for (Familiar f : familiares) {
+            str += f.toString() + "\n";
+        }
+        return str;
+    }
+    
+    public void ordenarFamiliaresPorEdad() {
+        Collections.sort(familiares, new Comparator<Familiar>() {
+            @Override
+            public int compare(Familiar f1, Familiar f2) {
+                return f1.getFechaNac().compareTo(f2.getFechaNac());
+            }
+        });
+    }
+    
+    public void leerDatos() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Introduzca el nombre del socio: ");
+        this.nombre = scanner.nextLine();
+        System.out.print("Introduzca la fecha de nacimiento del socio (en formato dd/MM/yyyy): ");
+        String fechaStr = scanner.nextLine();
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        try {
+            this.fechaNacimiento = dateFormat.parse(fechaStr);
+        } catch (ParseException e) {
+            System.out.println("Error al leer la fecha de nacimiento.");
+            this.fechaNacimiento = null;
+        }
+        System.out.print("Introduzca el teléfono del socio: ");
+        this.telefono = scanner.nextLine();
+        System.out.print("Introduzca el email del socio: ");
+        this.email = scanner.nextLine();
+    }	
+
+public static void main(String[] args) {
+    Scanner scanner = new Scanner(System.in);
+
+    int opcion = 0;
+    do {
+        System.out.println("Elija una opción: ");
+        System.out.println("1. Añadir nuevo cliente");
+        System.out.println("2. Modificar datos");
+        System.out.println("3. Dar de baja cliente");
+        System.out.println("4. Listar los clientes");
+        System.out.println("5. Comparar clientes");
+        System.out.println("6. Buscar Socio");
+        System.out.println("7. Agregar Familiar");
+        System.out.println("0. Salir");
+
+        opcion = scanner.nextInt();
+        scanner.nextLine(); // Limpiar buffer
+
+        switch (opcion) {
+            case 1:
+                Socio nuevoSocio = crearSocio();
+                socios.add(nuevoSocio);
+                System.out.println("Socio añadido correctamente: ");
+                System.out.println(nuevoSocio);
+                break;
+            case 2:
+                modificarSocio();
+                break;
+            case 3:
+                darDeBajaSocio();
+                break;
+            case 4:
+                listarSocios();
+                break;
+            case 5:
+                compararSocios();
+                break;
+            case 6:
+                System.out.print("Introduzca el número de socio que desea buscar: ");
+                int numero = scanner.nextInt();
+                scanner.nextLine(); // Limpiar buffer
+                Socio socioEncontrado = buscarPorNumero(numero);
+                if (socioEncontrado != null) {
+                    System.out.println(socioEncontrado);
+                } else {
+                    System.out.println("No se ha encontrado ningún socio con el número " + numero);
+                }
+                break;
+            case 7:
+            	agregarFamiliares(socios);
+            case 0:
+                System.out.println("Saliendo del programa...");
+                break;
+            default:
+                System.out.println("Opción no válida, por favor intente de nuevo.");
+                break;
+        }
+
+    } while (opcion != 0);
+}
+
+public static void agregarFamiliares(ArrayList<Socio> socios) {
+    Scanner sc = new Scanner(System.in);
+    System.out.print("Ingrese el número de socio: ");
+    int numeroSocio = sc.nextInt();
+    sc.nextLine(); // Consumir el salto de línea
+
+    // Buscar el socio correspondiente en el ArrayList
+    Socio socio = null;
+    for (Socio s : socios) {
+        if (s.getNumeroSocio() == numeroSocio) {
+            socio = s;
+            break;
+        }
+    }
+
+    // Si no se encuentra el socio, mostrar un mensaje y salir del método
+    if (socio == null) {
+        System.out.println("Socio no encontrado");
+        return;
+    }
+
+    // Pedir los atributos del familiar
+    System.out.print("Ingrese el DNI del familiar: ");
+    String dni = sc.nextLine();
+    System.out.print("Ingrese el nombre del familiar: ");
+    String nombre = sc.nextLine();
+    System.out.print("Ingrese la fecha de nacimiento del familiar (dd/mm/yyyy): ");
+    String fechaNacimientoStr = sc.nextLine();
+
+    // Crear un objeto de la clase Familiar con los atributos proporcionados
+    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+    Date fechaNacimiento = null;
+    try {
+        fechaNacimiento = sdf.parse(fechaNacimientoStr);
+    } catch (ParseException e) {
+        System.out.println("Formato de fecha incorrecto");
+        return;
+    }
+    Familiar familiar = new Familiar(dni, nombre, fechaNacimiento);
+
+    // Agregar el objeto Familiar al ArrayList de familiares del socio
+    socio.agregarFamiliar(familiar);
+
+    System.out.println("Familiar agregado exitosamente");
+}
+
+
+	private static Socio crearSocio() {
+	    Socio nuevoSocio = new Socio("", null, "", "");
+	    nuevoSocio.leerDatos();
+	    return nuevoSocio;
+	}
+	
+	public static Socio buscarPorNumero(int numero) {
+	    for (Socio socio : socios) {
+	        if (socio.getNumeroSocio() == numero) {
+	            return socio;
+	        }
+	    }
+	    return null;
+	}
+
+	public static void modificarSocio() {
+	    Scanner scanner = new Scanner(System.in);
+	    System.out.print("Introduzca el número de socio que desea modificar: ");
+	    int numeroSocio = scanner.nextInt();
+	    scanner.nextLine(); // Limpiar buffer
+
+	    Socio socio = buscarPorNumero(numeroSocio);
+	    if (socio == null) {
+	        System.out.println("No se encontró ningún socio con el número " + numeroSocio);
+	        return;
+	    }
+
+	    System.out.println("Datos actuales del socio:");
+	    System.out.println(socio);
+
+	    System.out.println("Introduzca los nuevos datos del socio:");
+	    socio.leerDatos();
+
+	    System.out.println("Los datos del socio han sido modificados exitosamente:");
+	    System.out.println(socio);
+	}
+
+	public static void darDeBajaSocio() {
+	    Scanner scanner = new Scanner(System.in);
+	    System.out.print("Introduzca el número de socio que desea dar de baja: ");
+	    int numeroSocio = scanner.nextInt();
+	    scanner.nextLine(); // Limpiar buffer
+
+	    Socio socio = buscarPorNumero(numeroSocio);
+	    if (socio == null) {
+	        System.out.println("No se encontró ningún socio con el número " + numeroSocio);
+	        return;
+	    }
+
+	    socios.remove(socio);
+	    System.out.println("El socio ha sido dado de baja exitosamente.");
+	}
+	
+	public static void compararSocios() {
+	    Scanner scanner = new Scanner(System.in);
+	    System.out.println("Introduzca el número del primer socio a comparar: ");
+	    int numSocio1 = scanner.nextInt();
+	    Socio socio1 = buscarPorNumero(numSocio1);
+	    if (socio1 == null) {
+	        System.out.println("No se ha encontrado un socio con ese número.");
+	        return;
+	    }
+	    scanner.nextLine(); // Limpiar buffer
+	    System.out.println("Introduzca el número del segundo socio a comparar: ");
+	    int numSocio2 = scanner.nextInt();
+	    Socio socio2 = buscarPorNumero(numSocio2);
+	    if (socio2 == null) {
+	        System.out.println("No se ha encontrado un socio con ese número.");
+	        return;
+	    }
+
+	    if (socio1.getFechaAlta().compareTo(socio2.getFechaAlta()) < 0) {
+	        System.out.println("El socio " + socio1.getNombre() + " se dio de alta antes que el socio " + socio2.getNombre() + ".");
+	    } else if (socio1.getFechaAlta().compareTo(socio2.getFechaAlta()) > 0) {
+	        System.out.println("El socio " + socio2.getNombre() + " se dio de alta antes que el socio " + socio1.getNombre() + ".");
+	    } else {
+	        System.out.println("Ambos socios se dieron de alta el mismo día.");
+	    }
+	}
+
+	
+	public static void ordenarSociosPorFechaAlta() {
+	    Collections.sort(socios, new Comparator<Socio>() {
+	        @Override
+	        public int compare(Socio s1, Socio s2) {
+	            return s1.getFechaAlta().compareTo(s2.getFechaAlta());
+	        }
+	    });
+	}
+	
+	public static void listarSocios() {
+	    System.out.println("Lista de socios:");
+	    Socio.ordenarSociosPorFechaAlta();
+	    for (Socio s : socios) {
+	        System.out.println(s);
+	    }
+	}
+	
+}
