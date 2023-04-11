@@ -59,8 +59,8 @@ public class Socio implements Serializable {
         this.fechaNacimiento = fechaNacimiento;
     }
 
-    public Date getFechaAlta() {
-        return fechaAlta;
+    public String getFechaAlta() {
+        return new SimpleDateFormat("dd-MM-yyyy").format(fechaAlta);
     }
 
     public String getTelefono() {
@@ -92,7 +92,7 @@ public class Socio implements Serializable {
         String str = "Número de socio: " + numeroSocio + "\n";
         str += "Nombre: " + nombre + "\n";
         str += "Fecha de nacimiento: " + fechaNacimiento + "\n";
-        str += "Fecha de alta: " + fechaAlta + "\n";
+        str += "Fecha de alta: " + new SimpleDateFormat("dd-MM-yyyy").format(fechaAlta) + "\n";
         str += "Teléfono: " + telefono + "\n";
         str += "Email: " + email + "\n";
         str += "Familiares: " + "\n";
@@ -146,7 +146,7 @@ public static void main(String[] args) {
         System.out.println("0. Salir");
 
         opcion = scanner.nextInt();
-        scanner.nextLine(); // Limpiar buffer
+        //scanner.nextLine(); 
 
         switch (opcion) {
             case 1:
@@ -170,7 +170,7 @@ public static void main(String[] args) {
             case 6:
                 System.out.print("Introduzca el número de socio que desea buscar: ");
                 int numero = scanner.nextInt();
-                scanner.nextLine(); // Limpiar buffer
+               // scanner.nextLine(); 
                 Socio socioEncontrado = buscarPorNumero(numero);
                 if (socioEncontrado != null) {
                     System.out.println(socioEncontrado);
@@ -195,7 +195,7 @@ public static void agregarFamiliares(ArrayList<Socio> socios) {
     Scanner sc = new Scanner(System.in);
     System.out.print("Ingrese el número de socio: ");
     int numeroSocio = sc.nextInt();
-    sc.nextLine(); // Consumir el salto de línea
+    //sc.nextLine(); 
 
     // Buscar el socio correspondiente en el ArrayList
     Socio socio = null;
@@ -214,11 +214,11 @@ public static void agregarFamiliares(ArrayList<Socio> socios) {
 
     // Pedir los atributos del familiar
     System.out.print("Ingrese el DNI del familiar: ");
-    String dni = sc.nextLine();
+    String dni = sc.next();
     System.out.print("Ingrese el nombre del familiar: ");
-    String nombre = sc.nextLine();
+    String nombre = sc.next();
     System.out.print("Ingrese la fecha de nacimiento del familiar (dd/mm/yyyy): ");
-    String fechaNacimientoStr = sc.nextLine();
+    String fechaNacimientoStr = sc.next();
 
     // Crear un objeto de la clase Familiar con los atributos proporcionados
     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -257,7 +257,7 @@ public static void agregarFamiliares(ArrayList<Socio> socios) {
 	    Scanner scanner = new Scanner(System.in);
 	    System.out.print("Introduzca el número de socio que desea modificar: ");
 	    int numeroSocio = scanner.nextInt();
-	    scanner.nextLine(); // Limpiar buffer
+	    //scanner.nextLine(); 
 
 	    Socio socio = buscarPorNumero(numeroSocio);
 	    if (socio == null) {
@@ -279,7 +279,7 @@ public static void agregarFamiliares(ArrayList<Socio> socios) {
 	    Scanner scanner = new Scanner(System.in);
 	    System.out.print("Introduzca el número de socio que desea dar de baja: ");
 	    int numeroSocio = scanner.nextInt();
-	    scanner.nextLine(); // Limpiar buffer
+	    //scanner.nextLine(); 
 
 	    Socio socio = buscarPorNumero(numeroSocio);
 	    if (socio == null) {
@@ -300,7 +300,7 @@ public static void agregarFamiliares(ArrayList<Socio> socios) {
 	        System.out.println("No se ha encontrado un socio con ese número.");
 	        return;
 	    }
-	    scanner.nextLine(); // Limpiar buffer
+	   // scanner.nextLine(); 
 	    System.out.println("Introduzca el número del segundo socio a comparar: ");
 	    int numSocio2 = scanner.nextInt();
 	    Socio socio2 = buscarPorNumero(numSocio2);
