@@ -95,9 +95,10 @@ public class Socio implements Serializable {
 
     @Override
     public String toString() {
+    	//str se utiliza ora concatenar los diferentes String ademas del toString de Familiares
         String str = "Número de socio: " + numeroSocio + "\n";
         str += "Nombre: " + nombre + "\n";
-        str += "Fecha de nacimiento: " + fechaNacimiento + "\n";
+        str += "Fecha de nacimiento: " + new SimpleDateFormat("dd-MM-yyyy").format(fechaNacimiento) + "\n";
         str += "Fecha de alta: " + new SimpleDateFormat("dd-MM-yyyy").format(fechaAlta) + "\n";
         str += "Teléfono: " + telefono + "\n";
         str += "Email: " + email + "\n";
