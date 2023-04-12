@@ -1,9 +1,15 @@
 package PracticaEvaluable;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
@@ -143,10 +149,12 @@ public static void main(String[] args) {
         System.out.println("5. Comparar clientes");
         System.out.println("6. Buscar Socio");
         System.out.println("7. Agregar Familiar");
+        System.out.println("8. Guardar Socios");
+        System.out.println("9. Leer Socios en Archivo");
         System.out.println("0. Salir");
 
         opcion = scanner.nextInt();
-        //scanner.nextLine(); 
+      
 
         switch (opcion) {
             case 1:
@@ -180,6 +188,10 @@ public static void main(String[] args) {
                 break;
             case 7:
             	agregarFamiliares(socios);
+            case 8:
+            	guardarSocios();
+            case 9: 
+            	LeerArchivo();
             case 0:
                 System.out.println("Saliendo del programa...");
                 break;
@@ -195,8 +207,7 @@ public static void agregarFamiliares(ArrayList<Socio> socios) {
     Scanner sc = new Scanner(System.in);
     System.out.print("Ingrese el número de socio: ");
     int numeroSocio = sc.nextInt();
-    //sc.nextLine(); 
-
+    
     // Buscar el socio correspondiente en el ArrayList
     Socio socio = null;
     for (Socio s : socios) {
@@ -219,12 +230,12 @@ public static void agregarFamiliares(ArrayList<Socio> socios) {
     String nombre = sc.next();
     System.out.print("Ingrese la fecha de nacimiento del familiar (dd/mm/yyyy): ");
     String fechaNacimientoStr = sc.next();
-
-    // Crear un objeto de la clase Familiar con los atributos proporcionados
+    
     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
     Date fechaNacimiento = null;
     try {
         fechaNacimiento = sdf.parse(fechaNacimientoStr);
+        
     } catch (ParseException e) {
         System.out.println("Formato de fecha incorrecto");
         return;
@@ -257,7 +268,7 @@ public static void agregarFamiliares(ArrayList<Socio> socios) {
 	    Scanner scanner = new Scanner(System.in);
 	    System.out.print("Introduzca el número de socio que desea modificar: ");
 	    int numeroSocio = scanner.nextInt();
-	    //scanner.nextLine(); 
+	
 
 	    Socio socio = buscarPorNumero(numeroSocio);
 	    if (socio == null) {
@@ -279,7 +290,7 @@ public static void agregarFamiliares(ArrayList<Socio> socios) {
 	    Scanner scanner = new Scanner(System.in);
 	    System.out.print("Introduzca el número de socio que desea dar de baja: ");
 	    int numeroSocio = scanner.nextInt();
-	    //scanner.nextLine(); 
+	    
 
 	    Socio socio = buscarPorNumero(numeroSocio);
 	    if (socio == null) {
@@ -300,7 +311,7 @@ public static void agregarFamiliares(ArrayList<Socio> socios) {
 	        System.out.println("No se ha encontrado un socio con ese número.");
 	        return;
 	    }
-	   // scanner.nextLine(); 
+	   
 	    System.out.println("Introduzca el número del segundo socio a comparar: ");
 	    int numSocio2 = scanner.nextInt();
 	    Socio socio2 = buscarPorNumero(numSocio2);
@@ -333,6 +344,54 @@ public static void agregarFamiliares(ArrayList<Socio> socios) {
 	    Socio.ordenarSociosPorFechaAlta();
 	    for (Socio s : socios) {
 	        System.out.println(s);
+	    }
+	}
+	
+	public static void guardarSocios() {
+	    try {
+	        if (socios.isEmpty()) {
+	            System.out.println("La lista de socios está vacía.");
+	        }
+	        
+	        // Abrir el archivo de salida
+	        FileOutputStream fileOut = new FileOutputStream("Socios.bin");
+
+	        // Crear un ObjectOutputStream
+	        ObjectOutputStream out = new ObjectOutputStream(fileOut);
+
+	        // Escribir los objetos en el archivo
+	        out.writeObject(socios);
+	        
+	        System.out.println("Los socios se han guardado correctamente en el archivo.");
+
+	        // Cerrar el ObjectOutputStream
+	        out.close();
+	        // Cerrar el archivo de salida
+	        fileOut.close();
+	    } catch (IOException ex) {
+	        System.out.println("Algo salió mal al guardar los socios: " + ex.getMessage());
+	    }
+	}
+
+	public static void LeerArchivo() {
+	    try {
+	        // Abrir el archivo de entrada
+	        FileInputStream fileIn = new FileInputStream("Socios.bin");
+	        // Crear un ObjectInputStream
+	        ObjectInputStream in = new ObjectInputStream(fileIn);
+	        // Leer la lista de socios del archivo
+	        ArrayList<Socio> socios = (ArrayList<Socio>) in.readObject();
+	        // Cerrar el ObjectInputStream
+	        in.close();
+	        // Cerrar el archivo de entrada
+	        fileIn.close();
+	        
+	        // Hacer algo con la lista de socios leída del archivo, por ejemplo:
+	        for (Socio socio : socios) {
+	            System.out.println(socio);
+	        }
+	    } catch (IOException | ClassNotFoundException ex) {
+	        System.out.println("Algo salió mal");
 	    }
 	}
 	
