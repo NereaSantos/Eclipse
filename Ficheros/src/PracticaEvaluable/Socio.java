@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -95,7 +96,8 @@ public class Socio implements Serializable {
 
     @Override
     public String toString() {
-    	//str se utiliza ora concatenar los diferentes String ademas del toString de Familiares
+    	/*str se utiliza ora concatenar los diferentes String ademas del 
+    	 * toString de Familiares */
         String str = "Número de socio: " + numeroSocio + "\n";
         str += "Nombre: " + nombre + "\n";
         str += "Fecha de nacimiento: " + new SimpleDateFormat("dd-MM-yyyy").format(fechaNacimiento) + "\n";
@@ -122,20 +124,71 @@ public class Socio implements Serializable {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Introduzca el nombre del socio: ");
         this.nombre = scanner.nextLine();
-        System.out.print("Introduzca la fecha de nacimiento del socio (en formato dd/MM/yyyy): ");
-        String fechaStr = scanner.nextLine();
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        try {
-            this.fechaNacimiento = dateFormat.parse(fechaStr);
-        } catch (ParseException e) {
-            System.out.println("Error al leer la fecha de nacimiento.");
-            this.fechaNacimiento = null;
+        
+        while (true) {
+            System.out.print("Introduzca la fecha de nacimiento del socio (en formato dd/MM/yyyy): ");
+            String fechaStr = scanner.nextLine();
+            DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            
+            try {
+                this.fechaNacimiento = dateFormat.parse(fechaStr);
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(fechaNacimiento);
+                int year = cal.get(Calendar.YEAR);
+                int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+                
+                if (year < 1900 || year > currentYear) {
+                    System.out.println("Fecha de nacimiento no válida.");
+                    continue;
+                } 
+                
+            } catch (ParseException e) {
+                System.out.println("Error al leer la fecha de nacimiento.");
+                this.fechaNacimiento = null;
+                continue;
+            }
+            
+            break;
         }
-        System.out.print("Introduzca el teléfono del socio: ");
-        this.telefono = scanner.nextLine();
-        System.out.print("Introduzca el email del socio: ");
-        this.email = scanner.nextLine();
-    }	
+        
+        while (true) {
+            System.out.print("Introduzca el teléfono del socio: ");
+            String telefonoStr = scanner.nextLine();
+            
+            if (!telefonoStr.matches("[0-9]+")) {
+                System.out.println("El teléfono solo debe contener números.");
+                continue;
+            }
+            
+            this.telefono = telefonoStr;
+            break;
+        }
+        
+        while (true) {
+            System.out.print("Introduzca el email del socio: ");
+            String emailStr = scanner.nextLine();
+            
+            /*La expresión utilizada para comprobar que el email 
+             * tenga una terminación correcta es "^.+\\@.+\\..+$" :
+
+			^: El inicio de la cadena.
+			.+: Cualquier carácter (excepto el salto de línea) una o más veces.
+			\\@: El carácter '@'.
+			.+: Cualquier carácter (excepto el salto de línea) una o más veces.
+			\\.: El carácter '.' 
+			.+: Cualquier carácter (excepto el salto de línea) una o más veces.
+			$: El final de la cadena.*/
+            
+            if (!emailStr.matches("^.+\\@.+\\..+$")) {
+                System.out.println("El email debe tener una terminación correcta.");
+                continue;
+            }
+            
+            this.email = emailStr;
+            break;
+        }
+    }
+
 
 public static void main(String[] args) {
     Scanner scanner = new Scanner(System.in);
@@ -179,7 +232,7 @@ public static void main(String[] args) {
             case 6:
                 System.out.print("Introduzca el número de socio que desea buscar: ");
                 int numero = scanner.nextInt();
-               // scanner.nextLine(); 
+               
                 Socio socioEncontrado = buscarPorNumero(numero);
                 if (socioEncontrado != null) {
                     System.out.println(socioEncontrado);
@@ -227,6 +280,14 @@ public static void agregarFamiliares(ArrayList<Socio> socios) {
     // Pedir los atributos del familiar
     System.out.print("Ingrese el DNI del familiar: ");
     String dni = sc.next();
+
+    /* Validar el formato del DNI utilizando una expresión regular
+     * que significa "8 dígitos seguidos de una letra (mayúscula o minúscula)" */
+    
+    if (!dni.matches("\\d{8}[A-Za-z]")) {
+        System.out.println("Formato de DNI incorrecto");
+        return;
+    }
     System.out.print("Ingrese el nombre del familiar: ");
     String nombre = sc.next();
     System.out.print("Ingrese la fecha de nacimiento del familiar (dd/mm/yyyy): ");
@@ -237,10 +298,25 @@ public static void agregarFamiliares(ArrayList<Socio> socios) {
     try {
         fechaNacimiento = sdf.parse(fechaNacimientoStr);
         
+        // Validar la fecha utilizando la clase Calendar
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(fechaNacimiento);
+        int anio = cal.get(Calendar.YEAR);
+        int mes = cal.get(Calendar.MONTH) + 1; 
+        int dia = cal.get(Calendar.DAY_OF_MONTH);
+        int añoActual = Calendar.getInstance().get(Calendar.YEAR);
+       
+        if (anio < 1900 || anio > añoActual || mes < 1 || mes > 12 || dia < 1 || dia > 31) {
+
+            throw new ParseException("Fecha no válida", 0);
+        
+        }
+        
     } catch (ParseException e) {
-        System.out.println("Formato de fecha incorrecto");
+        System.out.println("Formato de fecha incorrecto o fecha inválida");
         return;
     }
+    
     Familiar familiar = new Familiar(dni, nombre, fechaNacimiento);
 
     // Agregar el objeto Familiar al ArrayList de familiares del socio
@@ -248,6 +324,7 @@ public static void agregarFamiliares(ArrayList<Socio> socios) {
 
     System.out.println("Familiar agregado exitosamente");
 }
+
 
 
 	private static Socio crearSocio() {
