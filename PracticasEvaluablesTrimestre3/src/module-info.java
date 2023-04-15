@@ -5,5 +5,5 @@
  * @author nerea
  *
  */
-module PracticasEvaluables3ºTrimestr {
+module PracticasEvaluablesTrimestre3 {
 }
