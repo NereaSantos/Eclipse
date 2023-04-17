@@ -117,6 +117,7 @@ public class Socio implements Serializable {
         str += "Teléfono: " + telefono + "\n";
         str += "Email: " + email + "\n";
         str += "Familiares: " + "\n";
+        
         for (Familiar f : familiares) {
             str += f.toString() + "\n";
         }
@@ -188,15 +189,6 @@ public class Socio implements Serializable {
             this.email = emailStr;
             break;
         }
-    }
-
-    public static void ordenarSociosPorFechaAlta() {
-        Collections.sort(socios, new Comparator<Socio>() {
-            @Override
-            public int compare(Socio s1, Socio s2) {
-                return s1.fechaAlta.compareTo(s2.fechaAlta);
-            }
-        });
     }
 
  }

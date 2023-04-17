@@ -5,8 +5,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -29,14 +33,15 @@ public class main {
 	    int opcion = 0;
 	    do {
 	        System.out.println("Elija una opción: ");
-	        System.out.println("1. Añadir nuevo cliente");
+	        System.out.println("1. Añadir nuevo socio");
 	        System.out.println("2. Modificar datos");
-	        System.out.println("3. Dar de baja cliente");
-	        System.out.println("4. Listar los clientes");
-	        System.out.println("5. Comparar clientes");
-	        System.out.println("6. Buscar Socio");
-	        System.out.println("7. Agregar Familiar");
-	        System.out.println("8. Guardar Socios");
+	        System.out.println("3. Dar de baja socio");
+	        System.out.println("4. Listar los socio");
+	        System.out.println("5. Listar los socio con Familiares Por fecha de nacimiento");
+	        System.out.println("6. Comparar socios");
+	        System.out.println("7. Buscar socio");
+	        System.out.println("8. Agregar Familiar");
+	        System.out.println("9. Guardar socios");
 	        System.out.println("0. Salir");
 
 	        opcion = scanner.nextInt();
@@ -59,10 +64,12 @@ public class main {
 	                listarSocios();
 	                break;
 	            case 5:
-	                compararSocios();
-	                break;
+	            	listarSocioConFamiliaresPorFechaNacimiento();
 	            case 6:
-	                System.out.print("Introduzca el número de socio que desea buscar: ");
+	            	compararSocios();
+	                break;
+	            case 7:
+	            	System.out.print("Introduzca el número de socio que desea buscar: ");
 	                int numero = scanner.nextInt();
 	               
 	                Socio socioEncontrado = buscarPorNumero(numero);
@@ -72,9 +79,9 @@ public class main {
 	                    System.out.println("No se ha encontrado ningún socio con el número " + numero);
 	                }
 	                break;
-	            case 7:
-	            	agregarFamiliares(socios);
 	            case 8:
+	            	agregarFamiliares(socios);
+	            case 9:
 	            	guardarSocios();
 	            case 0:
 	                System.out.println("Saliendo del programa...");
@@ -265,10 +272,62 @@ public class main {
 		}
 		
 		public static void listarSocios() {
-		    System.out.println("Lista de socios:");
-		    Socio.ordenarSociosPorFechaAlta();
-		    for (Socio s : socios) {
-		        System.out.println(s);
+			
+		    Scanner scanner = new Scanner(System.in);
+		    
+		    System.out.println("Seleccione una opción de ordenamiento:");
+		    System.out.println("1. Ordenar por nombre");
+		    System.out.println("2. Ordenar por antigüedad");
+		    int ordenamiento = scanner.nextInt();
+
+		    Comparator<Socio> comparador = null;
+		    if (ordenamiento == 1) {
+		        comparador = new Comparator<Socio>() {
+		            public int compare(Socio s1, Socio s2) {
+		                return s1.getNombre().compareTo(s2.getNombre());
+		            }
+		        };
+		    } else if (ordenamiento == 2) {
+		        comparador = new Comparator<Socio>() {
+		            public int compare(Socio s1, Socio s2) {
+		                return s1.getFechaAlta().compareTo(s2.getFechaAlta());
+		            }
+		        };
+		    } else {
+		        System.out.println("Opción no válida");
+		        return;
+		    }
+
+		    Collections.sort(socios, comparador);
+		    for (Socio socio : socios) {
+		        System.out.println(socio);
+		    }
+		}
+
+		public static void listarSocioConFamiliaresPorFechaNacimiento() {
+
+		    listarSocios();
+		    
+		    ArrayList<Familiar> familiares = null;
+		    
+		    // Ordenamos la lista de familiares por fecha de nacimiento
+		    Collections.sort(familiares, new Comparator<Familiar>() {
+		        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		        @Override
+		        public int compare(Familiar f1, Familiar f2) {
+		            LocalDate date1 = f1.getFechaNac().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		            LocalDate date2 = f2.getFechaNac().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		            return date1.compareTo(date2);
+		        }
+		    });
+
+		    // Listamos los datos de los familiares ordenados por fecha de nacimiento
+		    System.out.println("Familiares:");
+		    for (Familiar familiar : familiares) {
+		    	 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		        LocalDate fechaNac = familiar.getFechaNac().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		        System.out.println("\tNombre: " + familiar.getNombre());
+		        System.out.println("\tFecha de nacimiento: " + fechaNac.format(formatter));
 		    }
 		}
 		
