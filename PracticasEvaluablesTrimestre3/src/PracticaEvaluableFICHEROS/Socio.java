@@ -1,57 +1,55 @@
 package PracticaEvaluableFICHEROS;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.Date;
-import java.util.List;
-import java.util.Scanner;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Scanner;
 
 public class Socio implements Serializable {
-
-	private static ArrayList<Socio> socios = new ArrayList<>();
-	
-	private static int ultimoNumeroSocio = 0;
-    
-    private int numeroSocio;
+    private static int ultimoNumeroSocio = 0;
+    private static int numeroSocio;
     private String nombre;
     private Date fechaNacimiento;
-    private Date fechaAlta;
+    private LocalDate fechaAlta;
     private String telefono;
-    private String email;
-    private ArrayList<Familiar> familiares;
+    private String correoElectronico;
+    private Familiar[] familiares;
+    private int numFamiliares;
 
-    public Socio(String nombre, Date fechaNacimiento, String telefono, String email) {
-        this.numeroSocio = ultimoNumeroSocio++;
+    private static Socio[] socios = new Socio[50];
+    private static int numSocios = 0;
+
+    public Socio(String nombre, Date fechaNacimiento, LocalDate fechaAlta, String telefono, String correoElectronico) {
+        this.numeroSocio = ++ultimoNumeroSocio;
         this.nombre = nombre;
         this.fechaNacimiento = fechaNacimiento;
-        this.fechaAlta = new Date();
+        this.fechaAlta = fechaAlta;
         this.telefono = telefono;
-        this.email = email;
-        this.familiares = new ArrayList<>();
+        this.correoElectronico = correoElectronico;
+        this.familiares = new Familiar[50];
+        this.numFamiliares = 0;
+        socios[numSocios] = this;
+        numSocios++;
     }
 
-    public Socio(String nombre, Date fechaNacimiento) {
-        this(nombre, fechaNacimiento, "", "");
+    public static Socio[] getSocios() {
+        return socios;
     }
 
-    public int getNumeroSocio() {
+    public static int getNumeroSocio() {
         return numeroSocio;
     }
+    
+    public static void setNumeroSocio(int numeroSocio) {
+		
+    	numeroSocio = numeroSocio;
+    	
+	}
 
     public String getNombre() {
         return nombre;
@@ -69,8 +67,12 @@ public class Socio implements Serializable {
         this.fechaNacimiento = fechaNacimiento;
     }
 
-    public String getFechaAlta() {
-        return new SimpleDateFormat("dd-MM-yyyy").format(fechaAlta);
+    public LocalDate getFechaAlta() {
+        return fechaAlta;
+    }
+
+    public void setFechaAlta(LocalDate fechaAlta) {
+        this.fechaAlta = fechaAlta;
     }
 
     public String getTelefono() {
@@ -81,114 +83,106 @@ public class Socio implements Serializable {
         this.telefono = telefono;
     }
 
-    public String getEmail() {
-        return email;
+    public String getCorreoElectronico() {
+        return correoElectronico;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setCorreoElectronico(String correoElectronico) {
+        this.correoElectronico = correoElectronico;
     }
 
-    public void agregarFamiliar(Familiar familiar) {
-        familiares.add(familiar);
-    }
-
-    public List<Familiar> getFamiliares() {
+    public Familiar[] getFamiliaresACargo() {
         return familiares;
     }
-    
-    public static void setUltimoNumeroSocio(int ultimoNumeroSocio) {
-        Socio.ultimoNumeroSocio = ultimoNumeroSocio;
-    }
-    
-    public static int getUltimoNumeroSocio() {
-        return ultimoNumeroSocio;
+
+    public int getNumFamiliares() {
+        return numFamiliares;
     }
 
     @Override
     public String toString() {
-    	/*str se utiliza pa
-    	 * ra concatenar los diferentes String ademas del 
-    	 * toString de Familiares */
-        String str = "Número de socio: " + numeroSocio + "\n";
-        str += "Nombre: " + nombre + "\n";
-        str += "Fecha de nacimiento: " + new SimpleDateFormat("dd-MM-yyyy").format(fechaNacimiento) + "\n";
-        str += "Fecha de alta: " + new SimpleDateFormat("dd-MM-yyyy").format(fechaAlta) + "\n";
-        str += "Teléfono: " + telefono + "\n";
-        str += "Email: " + email + "\n";
-        str += "Familiares: " + "\n";
-        
-        for (Familiar f : familiares) {
-            str += f.toString() + "\n";
-        }
-        return str;
-    }
-    
-    public void ordenarFamiliaresPorEdad() {
-        Collections.sort(familiares, new Comparator<Familiar>() {
-            @Override
-            public int compare(Familiar f1, Familiar f2) {
-                return f1.getFechaNac().compareTo(f2.getFechaNac());
-            }
-        });
-    }
-    
-    public void leerDatos() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Introduzca el nombre del socio: ");
-        this.nombre = scanner.nextLine();
-        
-        while (true) {
-            System.out.print("Introduzca la fecha de nacimiento del socio (en formato d/M/yyyy): ");
-            String fechaStr = scanner.nextLine();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
-            
-            try {
-                LocalDate fechaNacimiento = LocalDate.parse(fechaStr, formatter);
-                LocalDate fechaActual = LocalDate.now();
-                
-                if (fechaNacimiento.isAfter(fechaActual) || fechaNacimiento.getYear() < 1900) {
-                    System.out.println("Fecha de nacimiento no válida.");
-                    continue;
-                } 
-                
-                this.fechaNacimiento = Date.from(fechaNacimiento.atStartOfDay(ZoneId.systemDefault()).toInstant());
-                break;
-            } catch (DateTimeParseException e) {
-                System.out.println("Error al leer la fecha de nacimiento.");
-                this.fechaNacimiento = null;
-                /*El continue se utiliza para que el programa siga pidiendo
-                 * al usuario que se ingrese una fecha válida y el break del final
-                 * se utiliza cuandoya se ha ingresado una fecha válida*/
-                continue;
-            }  
-        }
-        
-        while (true) {
-            System.out.print("Introduzca el teléfono del socio: ");
-            String telefonoStr = scanner.nextLine();
-
-            if (!telefonoStr.matches("\\+\\d{2}(\\d{3}|\\d{4})\\d{6}")) {
-                System.out.println("El teléfono debe tener un formato válido (+XX####### o +XX########).");
-                continue;
-            }
-
-            this.telefono = telefonoStr;
-            break;
-        }
-        
-        while (true) {
-            System.out.print("Introduzca el email del socio: ");
-            String emailStr = scanner.nextLine();
-            
-            if (!emailStr.matches("^.+\\@.+\\..+$")) {
-                System.out.println("El email debe tener una terminación correcta.");
-                continue;
-            }
-            
-            this.email = emailStr;
-            break;
-        }
+    	String familiaresString = "";
+    	if (numFamiliares > 0) {
+    	    familiaresString = Arrays.toString(Arrays.copyOf(familiares, numFamiliares));
+    	}
+    return "Socio " +
+    	"\n numeroSocio: " + numeroSocio +
+    	"\n nombre: " + nombre +
+	    "\n fechaNacimiento: " + fechaNacimiento +
+	    "\n fechaAlta: " + fechaAlta +
+	    "\n telefono: " + telefono +
+	    "\n correoElectronico: " + correoElectronico +
+	    "\n familiares: " + familiaresString +
+	    "\n numFamiliares: " + numFamiliares;
     }
 
- }
+	public void ordenarFamiliaresPorEdad() {
+        // ordenar los familiares por fecha de nacimiento
+        Arrays.sort(familiares, Comparator.comparing(Familiar::getFechaNacimiento));
+    }
+	
+	  public void leerDatos() {
+	        Scanner scanner = new Scanner(System.in);
+	        System.out.print("Introduzca el nombre del socio: ");
+	        this.nombre = scanner.nextLine();
+	        
+	        while (true) {
+	            System.out.print("Introduzca la fecha de nacimiento del socio (en formato d/M/yyyy): ");
+	            String fechaStr = scanner.nextLine();
+	            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
+	            
+	            try {
+	                LocalDate fechaNacimiento = LocalDate.parse(fechaStr, formatter);
+	                LocalDate fechaActual = LocalDate.now();
+	                
+	                if (fechaNacimiento.isAfter(fechaActual) || fechaNacimiento.getYear() < 1900) {
+	                    System.out.println("Fecha de nacimiento no válida.");
+	                    continue;
+	                } 
+	                
+	                this.fechaNacimiento = (Date) Date.from(fechaNacimiento.atStartOfDay(ZoneId.systemDefault()).toInstant());
+	                break;
+	            } catch (DateTimeParseException e) {
+	                System.out.println("Error al leer la fecha de nacimiento.");
+	                this.fechaNacimiento = null;
+	                /*El continue se utiliza para que el programa siga pidiendo
+	                 * al usuario que se ingrese una fecha válida y el break del final
+	                 * se utiliza cuandoya se ha ingresado una fecha válida*/
+	                continue;
+	            }  
+	        }
+	        
+	        while (true) {
+	            System.out.print("Introduzca el teléfono del socio: ");
+	            String telefonoStr = scanner.nextLine();
+
+	            if (!telefonoStr.matches("\\+\\d{2}(\\d{3}|\\d{4})\\d{6}")) {
+	                System.out.println("El teléfono debe tener un formato válido (+XX####### o +XX########).");
+	                continue;
+	            }
+
+	            this.telefono = telefonoStr;
+	            break;
+	        }
+	        
+	        while (true) {
+	            System.out.print("Introduzca el email del socio: ");
+	            String emailStr = scanner.nextLine();
+	            
+	            if (!emailStr.matches("^.+\\@.+\\..+$")) {
+	                System.out.println("El email debe tener una terminación correcta.");
+	                continue;
+	            }
+	            
+	            this.correoElectronico = emailStr;
+	            break;
+	        }
+	    }
+
+	public void agregarFamiliar(Familiar familiar) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
+}

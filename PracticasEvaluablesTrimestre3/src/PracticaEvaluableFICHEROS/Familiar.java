@@ -17,12 +17,13 @@ public class Familiar implements Serializable {
 		this.fechaNacimiento = fechaNacimiento2;
 
 	}
+	
+	public Familiar() {
 
-	public Date getFechaNac() {
 		
-		return fechaNacimiento;
-	}
 
+	}
+	
 	public String getDni() {
 		return dni;
 	}
@@ -41,6 +42,12 @@ public class Familiar implements Serializable {
 
 	public void setFechaNacimiento(Date fechaNacimiento) {
 		this.fechaNacimiento = fechaNacimiento;
+	}
+	
+	public Date getFechaNacimiento() {
+		
+		return fechaNacimiento;
+		
 	}
 
 	 @Override

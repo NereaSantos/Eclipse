@@ -1,32 +1,32 @@
 package PracticaEvaluableFICHEROS;
 
-import java.io.FileInputStream;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Scanner;
 
 public class main {
 	
-	 private static ArrayList<Socio> socios = new ArrayList<Socio>();
+	static Socio[] socios = new Socio[50];
+	public static Familiar[] familiares = new Familiar[50];
+
+	static int numFamilias = 0;
+	static int numSocios = 0;
+
 	
 	public static void main(String[] args) {
-		
-		 leerArchivo();
 		 
-		    Socio.setUltimoNumeroSocio(Socio.getUltimoNumeroSocio() + 1);
+		    Socio.setNumeroSocio(Socio.getNumeroSocio() + 1);
 		
 		Scanner scanner = new Scanner(System.in);
 
@@ -50,7 +50,6 @@ public class main {
 	        switch (opcion) {
 	            case 1:
 	                Socio nuevoSocio = crearSocio();
-	                socios.add(nuevoSocio);
 	                System.out.println("Socio añadido correctamente: ");
 	                System.out.println(nuevoSocio);
 	                break;
@@ -81,8 +80,10 @@ public class main {
 	                break;
 	            case 8:
 	            	agregarFamiliares(socios);
+	            	 break;
 	            case 9:
 	            	guardarSocios();
+	            	 break;
 	            case 0:
 	                System.out.println("Saliendo del programa...");
 	                break;
@@ -94,14 +95,14 @@ public class main {
 	    } while (opcion != 0);
 	}
 
-	public static void agregarFamiliares(ArrayList<Socio> socios) {
+	public static void agregarFamiliares(Socio[] socios2) {
 	    Scanner sc = new Scanner(System.in);
 	    System.out.print("Ingrese el número de socio: ");
 	    int numeroSocio = sc.nextInt();
 	    
 	    // Buscar el socio correspondiente en el ArrayList
 	    Socio socio = null;
-	    for (Socio s : socios) {
+	    for (Socio s : socios2) {
 	        if (s.getNumeroSocio() == numeroSocio) {
 	            socio = s;
 	            break;
@@ -165,15 +166,16 @@ public class main {
 
 
 		private static Socio crearSocio() {
-		    Socio nuevoSocio = new Socio("", null, "", "");
+			LocalDate actual = LocalDate.now();
+		    Socio nuevoSocio = new Socio("", null, actual, "", "");
 		    nuevoSocio.leerDatos();
 		    return nuevoSocio;
 		}
 		
 		public static Socio buscarPorNumero(int numero) {
-		    for (Socio socio : socios) {
-		        if (socio.getNumeroSocio() == numero) {
-		            return socio;
+		    for (int i = 0; i <= numSocios; i++) {
+		        if (Socio.getNumeroSocio() == numero) {
+		            return socios[i];
 		        }
 		    }
 		    return null;
@@ -205,15 +207,24 @@ public class main {
 		    Scanner scanner = new Scanner(System.in);
 		    System.out.print("Introduzca el número de socio que desea dar de baja: ");
 		    int numeroSocio = scanner.nextInt();
-		    
 
-		    Socio socio = buscarPorNumero(numeroSocio);
-		    if (socio == null) {
+		    int index = -1;
+		    for (int i = 0; i < numSocios; i++) {
+		        if (socios[i].getNumeroSocio() == numeroSocio) {
+		            index = i;
+		            break;
+		        }
+		    }
+		    if (index == -1) {
 		        System.out.println("No se encontró ningún socio con el número " + numeroSocio);
 		        return;
 		    }
 
-		    socios.remove(socio);
+		    // Movemos el último socio al índice del socio que queremos dar de baja
+		    socios[index] = socios[numSocios-1];
+		    socios[numSocios-1] = null;
+		    numSocios--;
+
 		    System.out.println("El socio ha sido dado de baja exitosamente.");
 		}
 		
@@ -237,7 +248,7 @@ public class main {
 
 		    int comparacionNombre = socio1.getNombre().compareTo(socio2.getNombre());
 		    int comparacionFechaNacimiento = socio1.getFechaNacimiento().compareTo(socio2.getFechaNacimiento());
-		    int comparacionEmail = socio1.getEmail().compareTo(socio2.getEmail());
+		    int comparacionEmail = socio1.getCorreoElectronico().compareTo(socio2. getCorreoElectronico());
 		    int comparacionTelefono = socio1.getTelefono().compareTo(socio2.getTelefono());
 
 		    if (comparacionNombre < 0) {
@@ -263,7 +274,7 @@ public class main {
 
 		
 		public static void ordenarSociosPorFechaAlta() {
-		    Collections.sort(socios, new Comparator<Socio>() {
+		    Arrays.sort(socios, new Comparator<Socio>() {
 		        @Override
 		        public int compare(Socio s1, Socio s2) {
 		            return s1.getFechaAlta().compareTo(s2.getFechaAlta());
@@ -272,9 +283,8 @@ public class main {
 		}
 		
 		public static void listarSocios() {
-			
 		    Scanner scanner = new Scanner(System.in);
-		    
+
 		    System.out.println("Seleccione una opción de ordenamiento:");
 		    System.out.println("1. Ordenar por nombre");
 		    System.out.println("2. Ordenar por antigüedad");
@@ -283,9 +293,13 @@ public class main {
 		    Comparator<Socio> comparador = null;
 		    if (ordenamiento == 1) {
 		        comparador = new Comparator<Socio>() {
-		            public int compare(Socio s1, Socio s2) {
-		                return s1.getNombre().compareTo(s2.getNombre());
-		            }
+		        	public int compare(Socio s1, Socio s2) {
+		        	    if (s1 == null || s2 == null) {
+		        	        return 0; // o cualquier otro valor que desee en caso de que haya objetos nulos
+		        	    }
+		        	    return s1.getNombre().compareTo(s2.getNombre());
+		        	}
+
 		        };
 		    } else if (ordenamiento == 2) {
 		        comparador = new Comparator<Socio>() {
@@ -298,7 +312,7 @@ public class main {
 		        return;
 		    }
 
-		    Collections.sort(socios, comparador);
+		    Arrays.sort(socios, comparador);
 		    for (Socio socio : socios) {
 		        System.out.println(socio);
 		    }
@@ -308,56 +322,56 @@ public class main {
 
 		    listarSocios();
 		    
-		    ArrayList<Familiar> familiares = null;
-		    
-		    // Ordenamos la lista de familiares por fecha de nacimiento
-		    Collections.sort(familiares, new Comparator<Familiar>() {
-		        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		    // Ordenamos la lista de socios por fecha de alta
+		    Arrays.sort(socios, new Comparator<Socio>() {
 		        @Override
-		        public int compare(Familiar f1, Familiar f2) {
-		            LocalDate date1 = f1.getFechaNac().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-		            LocalDate date2 = f2.getFechaNac().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-		            return date1.compareTo(date2);
+		        public int compare(Socio s1, Socio s2) {
+		            return s1.getFechaAlta().compareTo(s2.getFechaAlta());
 		        }
 		    });
 
-		    // Listamos los datos de los familiares ordenados por fecha de nacimiento
-		    System.out.println("Familiares:");
-		    for (Familiar familiar : familiares) {
-		    	 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-		        LocalDate fechaNac = familiar.getFechaNac().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-		        System.out.println("\tNombre: " + familiar.getNombre());
-		        System.out.println("\tFecha de nacimiento: " + fechaNac.format(formatter));
-		    }
-		}
-		
-		public static void leerArchivo() {
-		    // Leer el archivo binario
-		    try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("Socios.bin"))) {
-		        Object obj = ois.readObject();
-		        if (obj != null) {
-		            // El archivo binario no está vacío, obtener los socios y el contador
-		            ArrayList<Socio> listaSocios = (ArrayList<Socio>) obj;
-		            Socio ultimoSocio = listaSocios.get(listaSocios.size() - 1);
-		            Socio.setUltimoNumeroSocio(ultimoSocio.getUltimoNumeroSocio());
-		            socios.addAll(listaSocios);
+		    // Iteramos sobre la lista de socios y listamos sus familiares ordenados por fecha de nacimiento
+		    for (Socio socio : socios) {
+		        System.out.println("Socio:");
+		        System.out.println("\tNombre: " + socio.getNombre());
+		        System.out.println("\tFecha de alta: " + socio.getFechaAlta());
+
+		        Familiar[] familiares = socio.getFamiliaresACargo();
+		        // Inicializamos la lista de familiares si no hay ninguno
+		        if (familiares == null) {
+		            familiares = new Familiar[50];
 		        }
-		    } catch (IOException | ClassNotFoundException e) {
-		       System.out.println("Algo salió mal");
-		    }
+
+		        // Ordenamos la lista de familiares por fecha de nacimiento
+		        Arrays.sort(familiares, new Comparator<Familiar>() {
+		            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		            @Override
+		            public int compare(Familiar f1, Familiar f2) {
+		                LocalDate date1 = f1.getFechaNacimiento().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		                LocalDate date2 = f2.getFechaNacimiento().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		                return date1.compareTo(date2);
+		            }
+		        });
+
+		        // Listamos los datos de los familiares ordenados por fecha de nacimiento
+		        System.out.println("Familiares:");
+		        for (Familiar familiar : familiares) {
+		            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		            LocalDate fechaNac = familiar.getFechaNacimiento().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		            System.out.println("\tNombre: " + familiar.getNombre());
+		            System.out.println("\tFecha de nacimiento: " + fechaNac.format(formatter));
+		        }
 		}
+	}
 
 		public static void guardarSocios() {
 		    try {
-		        if (socios.isEmpty()) {
-		            System.out.println("La lista de socios está vacía.");
-		        }
 
 		        FileOutputStream fileOut = new FileOutputStream("Socios.bin");
 		        ObjectOutputStream out = new ObjectOutputStream(fileOut);
 
 		        out.writeObject(socios);
-		        out.writeObject(Socio.getUltimoNumeroSocio());
+		        out.writeObject(Socio.getNumeroSocio());
 
 		        out.close();
 		        fileOut.close();
