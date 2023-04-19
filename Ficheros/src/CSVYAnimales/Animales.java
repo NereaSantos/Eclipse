@@ -16,7 +16,7 @@ public class Animales implements Serializable {
     public static void main(String[] args) {
         Animales animales = new Animales();
         animales.cargarDesdeCSV("animales.csv");
-        animales.guardarEnFicheroBinario("animales.dat");
+        animales.guardarEnFicheroBinario("animales.bin");
     }
 
     public void cargarDesdeCSV(String nombreArchivo) {
