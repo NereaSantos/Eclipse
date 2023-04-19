@@ -1,4 +1,4 @@
-package PracticaEvaluableFICHEROS;
+package PracticaEvaluableFicheros;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -33,6 +33,12 @@ public class Socio implements Serializable {
         this.correoElectronico = correoElectronico;
         this.familiares = new Familiar[50];
         this.numFamiliares = 0;
+        socios[numSocios] = this;
+        numSocios++;
+    }
+    
+    public Socio() {
+        
         socios[numSocios] = this;
         numSocios++;
     }
@@ -91,7 +97,7 @@ public class Socio implements Serializable {
         this.correoElectronico = correoElectronico;
     }
 
-    public Familiar[] getFamiliaresACargo() {
+    public Familiar[] getFamiliares() {
         return familiares;
     }
 
@@ -177,12 +183,14 @@ public class Socio implements Serializable {
 	            this.correoElectronico = emailStr;
 	            break;
 	        }
+	        
+	        numeroSocio++;
+	        
 	    }
 
-	public void agregarFamiliar(Familiar familiar) {
-		// TODO Auto-generated method stub
+	public void agregarFamiliares(Familiar familiar) {
+		
 		
 	}
-
 	
 }

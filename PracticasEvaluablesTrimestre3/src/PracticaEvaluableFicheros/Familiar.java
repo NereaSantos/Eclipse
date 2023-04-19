@@ -1,4 +1,4 @@
-package PracticaEvaluableFICHEROS;
+package PracticaEvaluableFicheros;
 
 import java.io.Serializable;
 import java.time.LocalDate;
