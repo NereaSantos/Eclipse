@@ -121,7 +121,7 @@ public class Animales implements Serializable {
         @Override
         public String toString() {
             return "Animal: " +
-                    "id: " + id +
+                    "\n id: " + id +
                     "\n especie: " + especie +
                     "\n nombre: " + nombre +
                     "\n edad: " + edad;
