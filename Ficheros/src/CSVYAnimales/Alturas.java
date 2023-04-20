@@ -67,15 +67,15 @@ public class Alturas {
             StringBuilder sb = new StringBuilder();
             sb.append("Alturas introducidas:\n");
             for (int i = 0; i < numeroAlturas; i++) {
-                sb.append("Altura " + (i+1) + "," + alturas[i] + "\n");
+                sb.append("Altura " + (i+1) + " " + alturas[i] + "\n");
             }
-            sb.append("Media de alturas," + calcularMedia() + "\n");
+            sb.append("Media de alturas: " + calcularMedia() + "\n");
             
             // Separar las líneas del archivo
             String[] lines = sb.toString().split("\n"); 
             for (String line : lines) {
             	// Separar los valores de cada línea por espacios
-            	String[] values = line.split("\\s+"); 
+            	String[] values = line.split(" "); 
             	// Reemplazar los espacios por ";"
                 String newLine = String.join(";", values);
                 // Escribir la nueva línea en el archivo
