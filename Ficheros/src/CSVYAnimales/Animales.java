@@ -51,6 +51,32 @@ public class Animales implements Serializable {
         }
         return animalesCargados;
     }
+
+    public void LeerArchivo(){
+        try {
+            // Abre un flujo de entrada para el archivo binario
+            FileInputStream archivoEntrada = new FileInputStream("animales.bin");
+            ObjectInputStream objetoEntrada = new ObjectInputStream(archivoEntrada);
+
+            // Lee el ArrayList de objetos serializados desde el archivo
+            ArrayList<Animal> animales = (ArrayList<Animal>) objetoEntrada.readObject();
+
+            // Recorre el ArrayList e imprime cada objeto serializado
+            for (Animal animal : animales) {
+                System.out.println(animal.toString());
+            }
+
+            // Cierra los flujos de entrada
+            objetoEntrada.close();
+            archivoEntrada.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
     
     public void guardarEnFicheroBinario(String nombreFichero) {
         try {
@@ -91,5 +117,15 @@ public class Animales implements Serializable {
         public int getEdad() {
             return edad;
         }
-    }
+        
+        @Override
+        public String toString() {
+            return "Animal: " +
+                    "id: " + id +
+                    "\n especie: " + especie +
+                    "\n nombre: " + nombre +
+                    "\n edad: " + edad;
+        	}
+        }
+
 }
