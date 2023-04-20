@@ -70,12 +70,24 @@ public class Alturas {
                 sb.append("Altura " + (i+1) + "," + alturas[i] + "\n");
             }
             sb.append("Media de alturas," + calcularMedia() + "\n");
-            fw.write(sb.toString());
+            
+            // Separar las líneas del archivo
+            String[] lines = sb.toString().split("\n"); 
+            for (String line : lines) {
+            	// Separar los valores de cada línea por espacios
+            	String[] values = line.split("\\s+"); 
+            	// Reemplazar los espacios por ";"
+                String newLine = String.join(";", values);
+                // Escribir la nueva línea en el archivo
+                fw.write(newLine + "\n");
+            }
+            
             fw.close();
             System.out.println("Los datos se han guardado en el archivo alturas.csv");
         } catch (IOException e) {
             System.out.println("Error al crear el archivo");
         }
     }
+
     
 }
