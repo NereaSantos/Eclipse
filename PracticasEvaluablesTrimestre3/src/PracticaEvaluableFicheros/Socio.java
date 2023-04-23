@@ -11,8 +11,9 @@ import java.util.Comparator;
 import java.util.Scanner;
 
 public class Socio implements Serializable {
-    private static int ultimoNumeroSocio = 0;
-    private static int numeroSocio;
+    
+    private int numeroSocio;
+    private static int siguienteNumeroSocio = 1;
     private String nombre;
     private Date fechaNacimiento;
     private LocalDate fechaAlta;
@@ -22,10 +23,11 @@ public class Socio implements Serializable {
     private int numFamiliares;
 
     private static Socio[] socios = new Socio[50];
-    private static int numSocios = 0;
+    private static int numSocios = 1;
 
     public Socio(String nombre, Date fechaNacimiento, LocalDate fechaAlta, String telefono, String correoElectronico) {
-        this.numeroSocio = ++ultimoNumeroSocio;
+        this.numeroSocio = getSiguienteNumeroSocio();
+        siguienteNumeroSocio++;
         this.nombre = nombre;
         this.fechaNacimiento = fechaNacimiento;
         this.fechaAlta = fechaAlta;
@@ -34,28 +36,35 @@ public class Socio implements Serializable {
         this.familiares = new Familiar[50];
         this.numFamiliares = 0;
         socios[numSocios] = this;
-        numSocios++;
     }
     
     public Socio() {
         
         socios[numSocios] = this;
-        numSocios++;
+        siguienteNumeroSocio++;
     }
 
+    public int getSiguienteNumeroSocio() {
+        int ultimoNumeroSocio = 0;
+        for (Socio socio : socios) {
+            if (socio != null && socio.numeroSocio > ultimoNumeroSocio) {
+                ultimoNumeroSocio = socio.numeroSocio;
+            }
+        }
+        return ultimoNumeroSocio + 1;
+    }
+    
     public static Socio[] getSocios() {
         return socios;
     }
 
-    public static int getNumeroSocio() {
+    public void setNumeroSocio(int numeroSocio) {
+        this.numeroSocio = numeroSocio;
+    }
+
+    public int getNumeroSocio() {
         return numeroSocio;
     }
-    
-    public static void setNumeroSocio(int numeroSocio) {
-		
-    	numeroSocio = numeroSocio;
-    	
-	}
 
     public String getNombre() {
         return nombre;

@@ -21,12 +21,12 @@ public class main {
 	public static Familiar[] familiares = new Familiar[50];
 
 	static int numFamilias = 0;
-	static int numSocios = 0;
+	static int numSocios = 1;
 
 	
 	public static void main(String[] args) {
-		 
-		    Socio.setNumeroSocio(Socio.getNumeroSocio() + 1);
+		
+		    Socio socio = new Socio();
 		
 		Scanner scanner = new Scanner(System.in);
 
@@ -63,11 +63,12 @@ public class main {
 	                break;
 	            case 5:
 	            	listarSocioConFamiliaresPorFechaNacimiento();
+	            	break;
 	            case 6:
 	            	System.out.print("Introduzca el número de socio que desea buscar: ");
 	                int numero = scanner.nextInt();
 	               
-	                Socio socioEncontrado = buscarPorNumero(numero);
+	                Socio socioEncontrado = buscarSocio(numero);
 	                if (socioEncontrado != null) {
 	                    System.out.println(socioEncontrado);
 	                } else {
@@ -159,28 +160,25 @@ public class main {
 	    System.out.println("Familiar agregado exitosamente");
 	}
 
-	private static Socio crearSocio() {
-		
+	public static Socio crearSocio() {
 	    Socio nuevoSocio = new Socio();
 	    nuevoSocio.leerDatos();
-	    nuevoSocio.setFechaAlta(LocalDate.now()); // Set the date of registration
+	    nuevoSocio.setFechaAlta(LocalDate.now()); 
+	    nuevoSocio.setNumeroSocio(numSocios); 
 	    socios[numSocios] = nuevoSocio;
 	    numSocios++;
 	    return nuevoSocio;
 	}
 
-
-
 		
-		public static Socio buscarPorNumero(int numero) {
-		    for (int i = 0; i <= Socio.getNumeroSocio(); i++) {
-		        if (Socio.getNumeroSocio() == numero) {
-		             socios[i].toString();
-		        }
-			
-		    }
-			return null;
-		}
+	public static Socio buscarSocio(int numSocio) {
+	    for (Socio socio : socios) {
+	        if (socio != null && socio.getNumeroSocio() == numSocio) {
+	            return socio;
+	        }
+	    }
+	    return null;
+	}
 
 		public static void modificarSocio() {
 		    Scanner scanner = new Scanner(System.in);
@@ -188,7 +186,7 @@ public class main {
 		    int numeroSocio = scanner.nextInt();
 		
 
-		    Socio socio = buscarPorNumero(numeroSocio);
+		    Socio socio = buscarSocio(numeroSocio);
 		    if (socio == null) {
 		        System.out.println("No se encontró ningún socio con el número " + numeroSocio);
 		        return;
@@ -249,13 +247,12 @@ public class main {
 		    Comparator<Socio> comparador = null;
 		    if (ordenamiento == 1) {
 		        comparador = new Comparator<Socio>() {
-		        	public int compare(Socio s1, Socio s2) {
-		        	    if (s1 == null || s2 == null) {
-		        	        return 0; // o cualquier otro valor que desee en caso de que haya objetos nulos
-		        	    }
-		        	    return s1.getNombre().compareTo(s2.getNombre());
-		        	}
-
+		            public int compare(Socio s1, Socio s2) {
+		                if (s1 == null || s2 == null) {
+		                    return 0;
+		                }
+		                return s1.getNombre().compareTo(s2.getNombre());
+		            }
 		        };
 		    } else if (ordenamiento == 2) {
 		        comparador = new Comparator<Socio>() {
@@ -270,7 +267,9 @@ public class main {
 
 		    Arrays.sort(socios, comparador);
 		    for (Socio socio : socios) {
-		        System.out.println(socio);
+		        if (socio != null) {
+		            System.out.println(socio);
+		        }
 		    }
 		}
 
@@ -327,7 +326,7 @@ public class main {
 		        ObjectOutputStream out = new ObjectOutputStream(fileOut);
 
 		        out.writeObject(socios);
-		        out.writeObject(Socio.getNumeroSocio());
+		        //out.writeObject(Socio.getNumeroSocio());
 
 		        out.close();
 		        fileOut.close();

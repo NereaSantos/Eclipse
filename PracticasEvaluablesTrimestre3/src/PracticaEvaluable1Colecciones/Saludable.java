@@ -1,8 +1,6 @@
 package PracticaEvaluable1Colecciones;
 
 public interface Saludable {
-
-	String getTipo();
+    String getTipo();
     int getCalorias();
-	
 }
