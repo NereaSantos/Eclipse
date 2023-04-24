@@ -38,9 +38,8 @@ public class main {
 	        System.out.println("3. Dar de baja socio");
 	        System.out.println("4. Listar los socio");
 	        System.out.println("5. Listar los socio con Familiares Por fecha de nacimiento");
-	        System.out.println("6. Buscar socio");
-	        System.out.println("7. Agregar Familiar");
-	        System.out.println("8. Guardar socios");
+	        System.out.println("6. Agregar Familiar");
+	        System.out.println("7. Guardar socios");
 	        System.out.println("0. Salir");
 
 	        opcion = scanner.nextInt();
@@ -65,20 +64,9 @@ public class main {
 	            	listarSocioConFamiliaresPorFechaNacimiento();
 	            	break;
 	            case 6:
-	            	System.out.print("Introduzca el número de socio que desea buscar: ");
-	                int numero = scanner.nextInt();
-	               
-	                Socio socioEncontrado = buscarSocio(numero);
-	                if (socioEncontrado != null) {
-	                    System.out.println(socioEncontrado);
-	                } else {
-	                    System.out.println("No se ha encontrado ningún socio con el número " + numero);
-	                }
-	                break;
-	            case 7:
 	            	agregarFamiliares(socios);
 	            	 break;
-	            case 8:
+	            case 7:
 	            	guardarSocios();
 	            	 break;
 	            case 0:
@@ -97,10 +85,10 @@ public class main {
 	    System.out.print("Ingrese el número de socio: ");
 	    int numeroSocio = sc.nextInt();
 	    
-	    // Buscar el socio correspondiente en el ArrayList
+	    // Buscar el socio correspondiente en el arreglo de objetos Socio
 	    Socio socio = null;
 	    for (Socio s : socios2) {
-	        if (s.getNumeroSocio() == numeroSocio) {
+	        if (s != null && s.getNumeroSocio() == numeroSocio) {
 	            socio = s;
 	            break;
 	        }
@@ -155,7 +143,7 @@ public class main {
 	    Familiar familiar = new Familiar(dni, nombre, fechaNacimiento);
 
 	    // Agregar el objeto Familiar al ArrayList de familiares del socio
-	    socio.agregarFamiliares(familiar);
+	    socio.añadirFamiliar(familiar);
 
 	    System.out.println("Familiar agregado exitosamente");
 	}
@@ -203,28 +191,30 @@ public class main {
 		}
 
 		public static void darDeBajaSocio() {
-		    Scanner scanner = new Scanner(System.in);
-		    System.out.print("Introduzca el número de socio que desea dar de baja: ");
-		    int numeroSocio = scanner.nextInt();
-
-		    int index = -1;
-		    for (int i = 0; i < numSocios; i++) {
-		        if (socios[i].getNumeroSocio() == numeroSocio) {
-		            index = i;
-		            break;
+		    Scanner sc = new Scanner(System.in);
+		    System.out.print("Introduzca el número de socio a dar de baja: ");
+		    int numSocio = sc.nextInt();
+		    boolean encontrado = false;
+		    for (int i = 0; i < socios.length; i++) {
+		        if (socios[i] != null && socios[i].getNumeroSocio() == numSocio) {
+		            encontrado = true;
+		            System.out.println("Socio encontrado:");
+		            System.out.println(socios[i]);
+		            System.out.print("¿Está seguro de que desea dar de baja a este socio? (s/n): ");
+		            String confirmacion = sc.next();
+		            if (confirmacion.equals("s")) {
+		                // Eliminar el objeto Socio del array
+		                socios[i] = null;
+		                System.out.println("Socio dado de baja correctamente.");
+		            } else {
+		                System.out.println("Operación cancelada.");
+		            }
+		            break; // Salir del bucle for
 		        }
 		    }
-		    if (index == -1) {
-		        System.out.println("No se encontró ningún socio con el número " + numeroSocio);
-		        return;
+		    if (!encontrado) {
+		        System.out.println("No se encontró ningún socio con ese número.");
 		    }
-
-		    // Movemos el último socio al índice del socio que queremos dar de baja
-		    socios[index] = socios[numSocios-1];
-		    socios[numSocios-1] = null;
-		    numSocios--;
-
-		    System.out.println("El socio ha sido dado de baja exitosamente.");
 		}
 		
 		public static void ordenarSociosPorFechaAlta() {
@@ -255,11 +245,14 @@ public class main {
 		            }
 		        };
 		    } else if (ordenamiento == 2) {
-		        comparador = new Comparator<Socio>() {
-		            public int compare(Socio s1, Socio s2) {
-		                return s1.getFechaAlta().compareTo(s2.getFechaAlta());
-		            }
-		        };
+		    	comparador = new Comparator<Socio>() {
+		    	    public int compare(Socio s1, Socio s2) {
+		    	        if (s1 == null || s2 == null) {
+		    	            return 0;
+		    	        }
+		    	        return s1.getFechaAlta().compareTo(s2.getFechaAlta());
+		    	    }
+		    	};
 		    } else {
 		        System.out.println("Opción no válida");
 		        return;
@@ -269,55 +262,74 @@ public class main {
 		    for (Socio socio : socios) {
 		        if (socio != null) {
 		            System.out.println(socio);
-		        }
+		            if (socio.getFamiliares() == null || socio.getFamiliares().length == 0) {
+		                System.out.println("Este socio no tiene familiares.");
+		            } else {
+		                // Imprimir información de los familiares
+		                System.out.println("Familiares:");
+		                for (Familiar familiar : socio.getFamiliares()) {
+		                    if (familiar != null) {
+		                        System.out.println(familiar);
+		                    }
+		                }
+		            }
+		         }
 		    }
 		}
 
 		public static void listarSocioConFamiliaresPorFechaNacimiento() {
-
 		    listarSocios();
-		    
+
 		    // Ordenamos la lista de socios por fecha de alta
 		    Arrays.sort(socios, new Comparator<Socio>() {
 		        @Override
 		        public int compare(Socio s1, Socio s2) {
+		            if (s1 == null || s2 == null) {
+		                return 0;
+		            }
 		            return s1.getFechaAlta().compareTo(s2.getFechaAlta());
 		        }
 		    });
 
 		    // Iteramos sobre la lista de socios y listamos sus familiares ordenados por fecha de nacimiento
 		    for (Socio socio : socios) {
-		        System.out.println("Socio:");
-		        System.out.println("\tNombre: " + socio.getNombre());
-		        System.out.println("\tFecha de alta: " + socio.getFechaAlta());
+		        if (socio != null) { // Añadimos una comprobación para evitar que se intente acceder a los datos de un socio nulo
+		            System.out.println("Socio:");
+		            System.out.println("\tNombre: " + socio.getNombre());
+		            System.out.println("\tFecha de alta: " + socio.getFechaAlta());
 
-		        Familiar[] familiares = socio.getFamiliares();
-		        // Inicializamos la lista de familiares si no hay ninguno
-		        if (familiares == null) {
-		            familiares = new Familiar[50];
-		        }
-
-		        // Ordenamos la lista de familiares por fecha de nacimiento
-		        Arrays.sort(familiares, new Comparator<Familiar>() {
-		            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-		            @Override
-		            public int compare(Familiar f1, Familiar f2) {
-		                LocalDate date1 = f1.getFechaNacimiento().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-		                LocalDate date2 = f2.getFechaNacimiento().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-		                return date1.compareTo(date2);
+		            Familiar[] familiares = socio.getFamiliares();
+		            // Inicializamos la lista de familiares si no hay ninguno
+		            if (familiares == null) {
+		                familiares = new Familiar[50];
 		            }
-		        });
 
-		        // Listamos los datos de los familiares ordenados por fecha de nacimiento
-		        System.out.println("Familiares:");
-		        for (Familiar familiar : familiares) {
-		            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-		            LocalDate fechaNac = familiar.getFechaNacimiento().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-		            System.out.println("\tNombre: " + familiar.getNombre());
-		            System.out.println("\tFecha de nacimiento: " + fechaNac.format(formatter));
+		            // Ordenamos la lista de familiares por fecha de nacimiento
+		            Arrays.sort(familiares, new Comparator<Familiar>() {
+		                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+		                @Override
+		                public int compare(Familiar f1, Familiar f2) {
+		                    LocalDate date1 = f1.getFechaNacimiento();
+		                    LocalDate date2 = f2.getFechaNacimiento();
+		                    return date1.compareTo(date2);
+		                }
+		            });
+
+		            // Listamos los datos de los familiares ordenados por fecha de nacimiento
+		            System.out.println("Familiares:");
+		            for (Familiar familiar : familiares) {
+		                if (familiar != null) { // Añadimos una comprobación para evitar que se intente acceder a los datos de un familiar nulo
+		                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		                    LocalDate fechaNac = familiar.getFechaNacimiento();
+		                    System.out.println("\tNombre: " + familiar.getNombre());
+		                    System.out.println("\tFecha de nacimiento: " + fechaNac.format(formatter));
+		                }
+		            }
 		        }
+		    }
 		}
-	}
+
 
 		public static void guardarSocios() {
 		    try {

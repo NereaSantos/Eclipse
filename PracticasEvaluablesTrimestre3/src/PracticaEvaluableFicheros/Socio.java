@@ -74,8 +74,8 @@ public class Socio implements Serializable {
         this.nombre = nombre;
     }
 
-    public Date getFechaNacimiento() {
-        return fechaNacimiento;
+    public LocalDate getFechaNacimiento() {
+        return this.fechaNacimiento.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     }
 
     public void setFechaNacimiento(Date fechaNacimiento) {
@@ -116,20 +116,34 @@ public class Socio implements Serializable {
 
     @Override
     public String toString() {
-    	String familiaresString = "";
-    	if (numFamiliares > 0) {
-    	    familiaresString = Arrays.toString(Arrays.copyOf(familiares, numFamiliares));
-    	}
-    return "Socio " +
-    	"\n numeroSocio: " + numeroSocio +
-    	"\n nombre: " + nombre +
-	    "\n fechaNacimiento: " + fechaNacimiento +
-	    "\n fechaAlta: " + fechaAlta +
-	    "\n telefono: " + telefono +
-	    "\n correoElectronico: " + correoElectronico +
-	    "\n familiares: " + familiaresString +
-	    "\n numFamiliares: " + numFamiliares;
+        String familiaresString = "";
+        boolean tieneFamiliares = false;
+        if (familiares != null) { // Agregar verificación nula
+            for (Familiar f : familiares) {
+                if (f != null) {
+                    tieneFamiliares = true;
+                    break;
+                }
+            }
+            if (tieneFamiliares) {
+                familiaresString = Arrays.toString(Arrays.copyOf(familiares, numFamiliares));
+            } else {
+                familiaresString = "Este socio no tiene familiares.";
+            }
+        } else { // Manejar el caso en que la matriz es nula
+            familiaresString = "Este socio no tiene familiares.";
+        }
+        return "Socio " +
+                "\n numeroSocio: " + numeroSocio +
+                "\n nombre: " + nombre +
+                "\n fechaNacimiento: " + fechaNacimiento +
+                "\n fechaAlta: " + fechaAlta +
+                "\n telefono: " + telefono +
+                "\n correoElectronico: " + correoElectronico +
+                "\n familiares: " + familiaresString +
+                "\n numFamiliares: " + numFamiliares;
     }
+
 
 	public void ordenarFamiliaresPorEdad() {
         // ordenar los familiares por fecha de nacimiento
@@ -197,9 +211,19 @@ public class Socio implements Serializable {
 	        
 	    }
 
-	public void agregarFamiliares(Familiar familiar) {
-		
-		
-	}
+	  public void añadirFamiliar(Familiar familiar) {
+		    if (familiares == null) {
+		        familiares = new Familiar[1];
+		        familiares[0] = familiar;
+		    } else {
+		        Familiar[] nuevosFamiliares = new Familiar[familiares.length + 1];
+		        for (int i = 0; i < familiares.length; i++) {
+		            nuevosFamiliares[i] = familiares[i];
+		        }
+		        nuevosFamiliares[familiares.length] = familiar;
+		        familiares = nuevosFamiliares;
+		    }
+		}
+
 	
 }

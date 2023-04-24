@@ -2,6 +2,8 @@ package PracticaEvaluableFicheros;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 public class Familiar implements Serializable {
@@ -44,18 +46,17 @@ public class Familiar implements Serializable {
 		this.fechaNacimiento = fechaNacimiento;
 	}
 	
-	public Date getFechaNacimiento() {
-		
-		return fechaNacimiento;
-		
+	public LocalDate getFechaNacimiento() {
+	    return this.fechaNacimiento.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 	}
+
 
 	 @Override
 	    public String toString() {
 	        return "Familiar" +
-	                "\n dni='" + dni + '\'' +
-	                "\n nombre='" + nombre + '\'' +
-	                "\n fechaNacimiento=" + fechaNacimiento;
+	                "\n dni: " + dni +
+	                "\n nombre: " + nombre + 
+	                "\n fechaNacimiento: " + fechaNacimiento;
 	    }
 	
 }
