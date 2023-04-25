@@ -17,13 +17,15 @@ import java.util.Scanner;
 
 public class main {
 	
-	static Socio[] socios = new Socio[50];
+	static Socio[] socios = new Socio[3];
 	public static Familiar[] familiares = new Familiar[50];
 
 	static int numFamilias = 0;
 	static int numSocios = 1;
 
-	
+	/*Club de 3 socios /
+	 * email acabado en @gmail.com /
+	 * Ordenar los socios por telefono sin tocar el main*/
 	public static void main(String[] args) {
 		
 		    Socio socio = new Socio();
@@ -152,12 +154,13 @@ public class main {
 	    Socio nuevoSocio = new Socio();
 	    nuevoSocio.leerDatos();
 	    nuevoSocio.setFechaAlta(LocalDate.now()); 
-	    nuevoSocio.setNumeroSocio(numSocios); 
-	    socios[numSocios] = nuevoSocio;
+	    nuevoSocio.setNumeroSocio(numSocios);
+	    socios = Arrays.copyOf(socios, socios.length+1);
+	    socios[socios.length-1] = nuevoSocio;
 	    numSocios++;
+	    
 	    return nuevoSocio;
 	}
-
 		
 	public static Socio buscarSocio(int numSocio) {
 	    for (Socio socio : socios) {
@@ -232,8 +235,14 @@ public class main {
 		    System.out.println("Seleccione una opción de ordenamiento:");
 		    System.out.println("1. Ordenar por nombre");
 		    System.out.println("2. Ordenar por antigüedad");
+		    System.out.println("3. Ordenar por numero de telefono");
 		    int ordenamiento = scanner.nextInt();
 
+		    if (ordenamiento < 1 || ordenamiento > 3) {
+		        System.out.println("Opción no válida");
+		        return;
+		    }
+		    
 		    Comparator<Socio> comparador = null;
 		    if (ordenamiento == 1) {
 		        comparador = new Comparator<Socio>() {
@@ -241,7 +250,9 @@ public class main {
 		                if (s1 == null || s2 == null) {
 		                    return 0;
 		                }
+		               
 		                return s1.getNombre().compareTo(s2.getNombre());
+		               
 		            }
 		        };
 		    } else if (ordenamiento == 2) {
@@ -253,7 +264,16 @@ public class main {
 		    	        return s1.getFechaAlta().compareTo(s2.getFechaAlta());
 		    	    }
 		    	};
-		    } else {
+		    } else if(ordenamiento == 3){	
+		    	comparador = new Comparator<Socio>() {
+		    	    public int compare(Socio s1, Socio s2) {
+		    	        if (s1 == null || s2 == null) {
+		    	            return 0;
+		    	        }
+		    	        return s1.compareTo(s2);
+		    	    }
+		    	};
+		    }else {
 		        System.out.println("Opción no válida");
 		        return;
 		    }
@@ -338,7 +358,6 @@ public class main {
 		        ObjectOutputStream out = new ObjectOutputStream(fileOut);
 
 		        out.writeObject(socios);
-		        //out.writeObject(Socio.getNumeroSocio());
 
 		        out.close();
 		        fileOut.close();

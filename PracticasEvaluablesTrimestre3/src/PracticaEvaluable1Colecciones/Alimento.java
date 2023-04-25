@@ -27,7 +27,7 @@ public class Alimento implements Saludable {
 
     @Override
     public String toString() {
-        return "Alimento con " + calorias + " calorias y de tipo " + tipo;
+        return "Alimento con " + calorias + " calorias y de tipo " + tipo + "\n";
     } 
     
      // Método para ordenar los alimentos

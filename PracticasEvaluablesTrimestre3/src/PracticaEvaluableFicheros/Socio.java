@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Scanner;
 
-public class Socio implements Serializable {
+public class Socio implements Serializable, Comparable {
     
     private int numeroSocio;
     private static int siguienteNumeroSocio = 1;
@@ -22,7 +22,7 @@ public class Socio implements Serializable {
     private Familiar[] familiares;
     private int numFamiliares;
 
-    private static Socio[] socios = new Socio[50];
+    private static Socio[] socios = new Socio[3];
     private static int numSocios = 1;
 
     public Socio(String nombre, Date fechaNacimiento, LocalDate fechaAlta, String telefono, String correoElectronico) {
@@ -118,7 +118,7 @@ public class Socio implements Serializable {
     public String toString() {
         String familiaresString = "";
         boolean tieneFamiliares = false;
-        if (familiares != null) { // Agregar verificación nula
+        if (familiares != null) { 
             for (Familiar f : familiares) {
                 if (f != null) {
                     tieneFamiliares = true;
@@ -127,12 +127,12 @@ public class Socio implements Serializable {
             }
             if (tieneFamiliares) {
                 familiaresString = Arrays.toString(Arrays.copyOf(familiares, numFamiliares));
-            } else {
-                familiaresString = "Este socio no tiene familiares.";
-            }
-        } else { // Manejar el caso en que la matriz es nula
-            familiaresString = "Este socio no tiene familiares.";
-        }
+        } else {
+        	
+        	familiaresString = "Este socio no tiene familiares.";
+        }}
+            
+            else { 
         return "Socio " +
                 "\n numeroSocio: " + numeroSocio +
                 "\n nombre: " + nombre +
@@ -142,14 +142,11 @@ public class Socio implements Serializable {
                 "\n correoElectronico: " + correoElectronico +
                 "\n familiares: " + familiaresString +
                 "\n numFamiliares: " + numFamiliares;
-    }
 
-
-	public void ordenarFamiliaresPorEdad() {
-        // ordenar los familiares por fecha de nacimiento
-        Arrays.sort(familiares, Comparator.comparing(Familiar::getFechaNacimiento));
+            }
+		return familiaresString;
     }
-	
+    
 	  public void leerDatos() {
 	        Scanner scanner = new Scanner(System.in);
 	        System.out.print("Introduzca el nombre del socio: ");
@@ -198,7 +195,7 @@ public class Socio implements Serializable {
 	            System.out.print("Introduzca el email del socio: ");
 	            String emailStr = scanner.nextLine();
 	            
-	            if (!emailStr.matches("^.+\\@.+\\..+$")) {
+	            if (!emailStr.endsWith("@gmail.com")) {
 	                System.out.println("El email debe tener una terminación correcta.");
 	                continue;
 	            }
@@ -224,6 +221,12 @@ public class Socio implements Serializable {
 		        familiares = nuevosFamiliares;
 		    }
 		}
+	  
+	  @Override
+	  public int compareTo(Object o) {
+	      Socio s1 = (Socio) o;
 
-	
+	      return this.telefono.compareTo(s1.telefono);
+	  }
+	  
 }
