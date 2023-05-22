@@ -1,7 +1,7 @@
 package GestorLiga;
 
 public interface IPartido {
-
+	
 	public String getLocal();
 	public String getVisitante();
 	public int getGolesLocal();

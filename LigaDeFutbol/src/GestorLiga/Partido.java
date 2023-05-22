@@ -18,6 +18,11 @@ public class Partido implements IPartido {
 		
 	}
 	
+	Partido(){
+		
+		
+	}
+	
 	public String getNombreEquipoL() {
 		return nombreEquipoL;
 	}
