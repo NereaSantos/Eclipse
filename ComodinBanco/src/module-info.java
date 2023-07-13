@@ -1,9 +1,0 @@
-/**
- * 
- */
-/**
- * @author nerea
- *
- */
-module ComodnBanco {
-}

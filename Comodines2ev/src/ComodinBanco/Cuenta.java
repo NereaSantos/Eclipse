@@ -5,6 +5,30 @@ public class Cuenta {
 	double saldo;
 	double interes;
 	double comision = 0.6;
+	public static enum tipoCuenta{
+		
+		CUENTACORRIENTE, CUENTAVIVIENDA, FONDOINVERSION
+		
+	}
+	
+	Cuenta(){
+		
+		
+	}
+	
+	Cuenta(double saldo,double interes, tipoCuenta[] cuentas){
+		
+		this.saldo = saldo;
+		this.interes = interes;
+		this.cuentas = cuentas;
+		
+	}
+	
+	Cuenta(tipoCuenta cuentas){
+		
+		this.cuentas = cuentas;
+		
+	}
 	
 	public double getSaldo() {
 		return saldo;

@@ -10,4 +10,12 @@ public class CuentaVivienda extends Cuenta {
 	
 	}	
 	
+	@Override
+	public void SacarDinero() {
+		
+		System.out.println("No se puede sacar dinero de las cuentas vivienda");
+		
+		
+	}
+	
 }

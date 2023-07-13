@@ -10,5 +10,20 @@ public class FondoInversion extends Cuenta {
 	
 	}	
 	
+	@Override
+	public void SacarDinero() {
+		
+		double dinero = 0;
+		
+		if(this.saldo < -500) {
+			
+			System.out.println("No puede sacarse mas dinero del que hay en la cuenta");
+			
+		}else {
+			
+			this.saldo = saldo - dinero;
+		}
+		
+	}
 	
 }
